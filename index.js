@@ -16,20 +16,22 @@ const LaunchRequestHandler = {
     let speechText = "Welcome to anu, you can add 2 numbers";
     //welcome screen message
     let displayText = "Welcome to anu calculator";
-    return (
-      handlerInput.responseBuilder
-        .speak(speechText)
-        .reprompt(speechText)
-        // .addDirective({
-        //   type: "Alexa.Presentation.APL.RenderDocument",
-        //  // token: "[SkillProvidedToken]",
-        //   version: "1.0",
-        //   document: myDocument,
-        //   datasources: {}
-        // })
-        .withSimpleCard(appName, displayText)
-        .getResponse()
-    );
+    return handlerInput.responseBuilder
+      .speak(speechText)
+      .reprompt(speechText)
+      .addDirective({
+        type: "Alexa.Presentation.APL.RenderDocument",
+        version: "1.0",
+        document: require("./main.json")
+        // datasources: {
+        //   animalSoundData: {
+        //     message: speechText,
+        //     image: require("./calc.png")
+        //   }
+        // }
+      })
+      .withSimpleCard(appName, displayText)
+      .getResponse();
   }
 };
 
@@ -55,8 +57,9 @@ const AddIntentHandler = {
       displayText = `${result}`;
 
       return handlerInput.responseBuilder
-        .speak(speechText)
         .withSimpleCard(appName, displayText)
+        .speak(speechText)
+
         .withShouldEndSession(true)
         .getResponse();
     } else {
