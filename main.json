@@ -8,13 +8,21 @@
     }
   ],
   "mainTemplate": {
-    "parameters": [
-      "payload"
-    ],
+    "parameters": ["payload"],
     "items": [
       {
-        "type": "Text",
-        "text": "Hello World"
+        "type": "Container",
+        "direction": "column",
+        "paddingLeft": 50,
+        "paddingTop": 100,
+        "color": "red",
+        "items": [
+          {
+            "type": "Text",
+            "text": "<div align='center' style='color:red'>Welcome to<br/>Anu Calculator,<br/>You can add 2 no.</div>",
+            "style": "marginTop:'60px'"
+          }
+        ]
       }
     ]
   }
