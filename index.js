@@ -95,64 +95,68 @@ const AddIntentHandler = {
       // };
 
       if (supportsDisplay(handlerInput)) {
-        return handlerInput.responseBuilder
-          .withSimpleCard(appName, displayText)
-          .speak(speechText)
+        return (
+          handlerInput.responseBuilder
+            .withSimpleCard(appName, displayText)
+            .speak(speechText)
 
-          .withShouldEndSession(true)
-          .getResponse();
+            // .withShouldEndSession(true)
+            .getResponse()
+        );
       } else {
-        return handlerInput.responseBuilder
-          .withSimpleCard(appName, displayText)
-          .speak(speechText)
-          .addDirective({
-            type: "Alexa.Presentation.APL.RenderDocument",
-            version: "1.0",
-            document: {
-              type: "APL",
+        return (
+          handlerInput.responseBuilder
+            .withSimpleCard(appName, displayText)
+            .speak(speechText)
+            .addDirective({
+              type: "Alexa.Presentation.APL.RenderDocument",
               version: "1.0",
-              import: [
-                {
-                  name: "alexa-layouts",
-                  version: "1.0.0"
-                }
-              ],
-              mainTemplate: {
-                parameters: ["payload"],
-                items: [
+              document: {
+                type: "APL",
+                version: "1.0",
+                import: [
                   {
-                    when: "${viewport.shape == 'round'}",
-                    type: "Container",
-                    direction: "column",
-                    paddingLeft: 70,
-                    paddingTop: 100,
-                    items: [
-                      {
-                        type: "Text",
-                        text: `<div align='center'> The result of<br/> ${first} plus ${second}<br/> is <b>${result}</b></div>`,
-                        style: "textStylePrimary2"
-                      }
-                    ]
-                  },
-                  {
-                    type: "Container",
-                    direction: "row",
-                    paddingLeft: 0,
-
-                    items: [
-                      {
-                        type: "Text",
-                        text: `<div align='center'> The result of<br/> ${first} plus ${second}<br/> is ${result}</div>`,
-                        style: "textStylePrimary2"
-                      }
-                    ]
+                    name: "alexa-layouts",
+                    version: "1.0.0"
                   }
-                ]
+                ],
+                mainTemplate: {
+                  parameters: ["payload"],
+                  items: [
+                    {
+                      when: "${viewport.shape == 'round'}",
+                      type: "Container",
+                      direction: "column",
+                      paddingLeft: 70,
+                      paddingTop: 100,
+                      items: [
+                        {
+                          type: "Text",
+                          text: `<div align='center'> The result of<br/> ${first} plus ${second}<br/> is <b>${result}</b></div>`,
+                          style: "textStylePrimary2"
+                        }
+                      ]
+                    },
+                    {
+                      type: "Container",
+                      direction: "row",
+                      paddingLeft: 0,
+
+                      items: [
+                        {
+                          type: "Text",
+                          text: `<div align='center'> The result of<br/> ${first} plus ${second}<br/> is ${result}</div>`,
+                          style: "textStylePrimary2"
+                        }
+                      ]
+                    }
+                  ]
+                }
               }
-            }
-          })
-          .withShouldEndSession(true)
-          .getResponse();
+            })
+            //.withShouldEndSession(true)
+            .getResponse()
+        );
       }
       // return handlerInput.responseBuilder
       //   .withSimpleCard(appName, displayText)
@@ -180,10 +184,7 @@ const HelpIntentHandler = {
   },
   handle(handlerInput) {
     //help text for your skill
-    let speechText = {
-      type: "RichText",
-      text: "you can say add 1 and 2 or 1 plus 2"
-    };
+    let speechText = "you can say add 1 and 2 or 1 plus 2";
 
     // return handlerInput.responseBuilder
     //   .speak(speechText)
@@ -218,8 +219,8 @@ const HelpIntentHandler = {
               parameters: ["payload"],
               items: [
                 {
-                  type: "RichText",
-                  text: "you can say add 1 and 2 or 1 plus 2"
+                  type: "Text",
+                  text: "you can say add 1 and 2 "
                 }
               ]
             }
@@ -247,7 +248,7 @@ const CancelAndStopIntentHandler = {
     );
   },
   handle(handlerInput) {
-    let speechText = "Goodbye";
+    let speechText = "ok Goodbye";
     return handlerInput.responseBuilder
       .speak(speechText)
       .withSimpleCard(appName, speechText)
