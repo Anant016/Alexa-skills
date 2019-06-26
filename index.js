@@ -2,7 +2,7 @@
 
 //import ask-sdk-core
 const Alexa = require("ask-sdk-core");
-//const viewportProfile = Alexa.getViewportProfile(handlerInput.requestEnvelope);
+
 //skill name
 const appName = "anu calculator";
 function supportsDisplay(handlerInput) {
@@ -15,12 +15,22 @@ function supportsDisplay(handlerInput) {
       .Display;
   return hasDisplay;
 }
+function supportsAPL(handlerInput) {
+  const supportedInterfaces =
+    handlerInput.requestEnvelope.context.System.device.supportedInterfaces;
+  const aplInterface = supportedInterfaces["Alexa.Presentation.APL"];
+  return aplInterface != null && aplInterface != undefined;
+}
+
 //code for the handlers
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === "LaunchRequest";
   },
   handle(handlerInput) {
+    const viewportProfile = Alexa.getViewportProfile(
+      handlerInput.requestEnvelope
+    );
     //welcome message
     let speechText = "Welcome to anu calculator, you can add 2 numbers";
     //welcome screen message
@@ -48,13 +58,18 @@ const LaunchRequestHandler = {
     //   .withSimpleCard(appName, displayText)
     //   .getResponse();
 
-    if (supportsDisplay(handlerInput)) {
-      return handlerInput.responseBuilder
-        .speak(speechText)
-        .reprompt(speechText)
-        .withSimpleCard(appName, displayText)
-        .getResponse();
-    } else {
+    if (
+      supportsAPL(handlerInput)
+      // (!supportsDisplay(handlerInput) &&
+      //   !testingOnSim &&
+      //   viewportProfile == "HUB-LANDSCAPE-MEDIUM") ||
+      // (!supportsDisplay(handlerInput) &&
+      //   !testingOnSim &&
+      //   viewportProfile == "HUB-ROUND-SMALL") ||
+      // (!supportsDisplay(handlerInput) &&
+      //   !testingOnSim &&
+      //   viewportProfile == "HUB-LANDSCAPE-SMALL")
+    ) {
       return handlerInput.responseBuilder
         .speak(speechText)
         .reprompt(speechText)
@@ -64,6 +79,12 @@ const LaunchRequestHandler = {
           version: "1.0",
           document: require("./main.json")
         })
+        .getResponse();
+    } else {
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(speechText)
+        .withSimpleCard(appName, displayText)
         .getResponse();
     }
   }
@@ -78,6 +99,9 @@ const AddIntentHandler = {
     );
   },
   handle(handlerInput) {
+    const viewportProfile = Alexa.getViewportProfile(
+      handlerInput.requestEnvelope
+    );
     let speechText = "";
     let displayText = "";
     let intent = handlerInput.requestEnvelope.request.intent;
@@ -94,16 +118,23 @@ const AddIntentHandler = {
       //   text: `<div align='center'>The result of ${first} plus ${second} is ${result}</div>`
       // };
 
-      if (supportsDisplay(handlerInput)) {
-        return (
-          handlerInput.responseBuilder
-            .withSimpleCard(appName, displayText)
-            .speak(speechText)
-
-            // .withShouldEndSession(true)
-            .getResponse()
-        );
-      } else {
+      if (
+        // (supportsAPL(handlerInput))&&(
+        //   viewportProfile == "HUB-LANDSCAPE-MEDIUM" ||
+        //   viewportProfile == "HUB-ROUND-SMALL" ||
+        //   viewportProfile == "HUB-LANDSCAPE-SMALL"
+        //   )
+        supportsAPL(handlerInput)
+        // (!supportsDisplay(handlerInput) &&
+        //   !testingOnSim &&
+        //   viewportProfile == "HUB-LANDSCAPE-MEDIUM") ||
+        // (!supportsDisplay(handlerInput) &&
+        //   !testingOnSim &&
+        //   viewportProfile == "HUB-ROUND-SMALL") ||
+        // (!supportsDisplay(handlerInput) &&
+        //   !testingOnSim &&
+        //   viewportProfile == "HUB-LANDSCAPE-SMALL")
+      ) {
         return (
           handlerInput.responseBuilder
             .withSimpleCard(appName, displayText)
@@ -157,6 +188,15 @@ const AddIntentHandler = {
             //.withShouldEndSession(true)
             .getResponse()
         );
+      } else {
+        return (
+          handlerInput.responseBuilder
+            .withSimpleCard(appName, displayText)
+            .speak(speechText)
+
+            // .withShouldEndSession(true)
+            .getResponse()
+        );
       }
       // return handlerInput.responseBuilder
       //   .withSimpleCard(appName, displayText)
@@ -186,54 +226,54 @@ const HelpIntentHandler = {
     //help text for your skill
     let speechText = "you can say add 1 and 2 or 1 plus 2";
 
-    // return handlerInput.responseBuilder
-    //   .speak(speechText)
-    //   .reprompt(speechText)
-    //   .withSimpleCard(appName, speechText)
-    //   .getResponse();
-    if (
-      (supportsDisplay(handlerInput) &&
-        !testingOnSim &&
-        viewportProfile == "HUB-LANDSCAPE-MEDIUM") ||
-      (supportsDisplay(handlerInput) &&
-        !testingOnSim &&
-        viewportProfile == "HUB-ROUND-SMALL")
-    ) {
-      return handlerInput.responseBuilder
-        .speak(speechText)
-        .reprompt(speechText)
-        .withSimpleCard(appName, speechText)
-        .addDirective({
-          type: "Alexa.Presentation.APL.RenderDocument",
-          version: "1.0",
-          document: {
-            type: "APL",
-            version: "1.0",
-            import: [
-              {
-                name: "alexa-layouts",
-                version: "1.0.0"
-              }
-            ],
-            mainTemplate: {
-              parameters: ["payload"],
-              items: [
-                {
-                  type: "Text",
-                  text: "you can say add 1 and 2 "
-                }
-              ]
-            }
-          }
-        })
-        .getResponse();
-    } else {
-      return handlerInput.responseBuilder
-        .speak(speechText)
-        .reprompt(speechText)
-        .withSimpleCard(appName, speechText)
-        .getResponse();
-    }
+    return handlerInput.responseBuilder
+      .speak(speechText)
+      .reprompt(speechText)
+      .withSimpleCard(appName, speechText)
+      .getResponse();
+    // if (
+    //   (supportsDisplay(handlerInput) &&
+    //     !testingOnSim &&
+    //     viewportProfile == "HUB-LANDSCAPE-MEDIUM") ||
+    //   (supportsDisplay(handlerInput) &&
+    //     !testingOnSim &&
+    //     viewportProfile == "HUB-ROUND-SMALL")
+    // ) {
+    //   return handlerInput.responseBuilder
+    //     .speak(speechText)
+    //     .reprompt(speechText)
+    //     .withSimpleCard(appName, speechText)
+    //     .addDirective({
+    //       type: "Alexa.Presentation.APL.RenderDocument",
+    //       version: "1.0",
+    //       document: {
+    //         type: "APL",
+    //         version: "1.0",
+    //         import: [
+    //           {
+    //             name: "alexa-layouts",
+    //             version: "1.0.0"
+    //           }
+    //         ],
+    //         mainTemplate: {
+    //           parameters: ["payload"],
+    //           items: [
+    //             {
+    //               type: "Text",
+    //               text: "you can say add 1 and 2 "
+    //             }
+    //           ]
+    //         }
+    //       }
+    //     })
+    //     .getResponse();
+    // } else {
+    //   return handlerInput.responseBuilder
+    //     .speak(speechText)
+    //     .reprompt(speechText)
+    //     .withSimpleCard(appName, speechText)
+    //     .getResponse();
+    // }
   }
 };
 
